@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency Command Center - Healix Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #fef2f2;
+  --card: #ffffff;
+  --text: #0f172a;
+  --emergency-red: #ef4444;
+  --warning-orange: #f59e0b;
+  --resolved-green: #10b981;
+  --shadow: 0 20px 50px rgba(239, 68, 68, 0.1);
+}
+
+body.night {
+  --bg: #000;
+  --card: #111;
+  --text: #fff;
+}
+
+body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; overflow-x: hidden; }
+
+nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(239,68,68,0.1); }
+nav h2 { margin: 0; font-weight: 900; color: var(--emergency-red); cursor: pointer; }
+
+.main-container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+/* EMERGENCY HEADER */
+.sos-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; }
+.sos-count-box { background: var(--emergency-red); color: white; padding: 20px 40px; border-radius: 25px; display: flex; align-items: center; gap: 20px; box-shadow: 0 15px 30px rgba(239,68,68,0.3); animation: pulse 2s infinite; }
+.sos-count-box h1 { margin: 0; font-size: 42px; font-weight: 900; }
+.sos-count-box p { margin: 0; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; }
+
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* EMERGENCY LIST */
+.sos-grid { display: flex; flex-direction: column; gap: 25px; }
+
+.sos-card { background: var(--card); border-radius: 35px; padding: 40px; display: flex; justify-content: space-between; align-items: center; border: 2px solid transparent; transition: 0.4s; position: relative; overflow: hidden; box-shadow: var(--shadow); }
+.sos-card.high { border-color: var(--emergency-red); }
+.sos-card.high::before { content: ''; position: absolute; top: 0; left: 0; width: 8px; height: 100%; background: var(--emergency-red); }
+
+.sos-info h3 { margin: 0; font-size: 28px; font-weight: 900; }
+.sos-info .condition { font-size: 18px; font-weight: 700; color: var(--emergency-red); margin: 10px 0; display: flex; align-items: center; gap: 10px; }
+.sos-info .meta { font-size: 12px; font-weight: 900; opacity: 0.5; text-transform: uppercase; display: flex; gap: 20px; }
+
+.sos-actions { display: flex; gap: 15px; }
+.btn { padding: 15px 30px; border-radius: 18px; border: none; font-weight: 900; font-size: 12px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+.btn-red { background: var(--emergency-red); color: white; }
+.btn-outline { background: transparent; border: 2.5px solid #ddd; color: inherit; }
+.btn-red:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(239,68,68,0.2); }
+
+/* DETAIL MODAL */
+#sosModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); display: none; z-index: 2000; align-items: center; justify-content: center; }
+.sos-body { background: white; width: 90%; max-width: 900px; border-radius: 40px; padding: 50px; color: #000; position: relative; }
+
+.clinical-snapshot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 30px 0; }
+.snapshot-item { background: #f8fafc; padding: 20px; border-radius: 20px; }
+.snapshot-item label { display: block; font-size: 10px; font-weight: 900; opacity: 0.4; text-transform: uppercase; margin-bottom: 5px; }
+.snapshot-item span { font-weight: 800; font-size: 16px; }
+
+.live-vitals { display: flex; gap: 30px; margin-top: 30px; padding: 20px; background: #fff1f2; border-radius: 20px; border: 2px solid #fecaca; }
+.vital { flex: 1; text-align: center; }
+.vital-val { font-size: 24px; font-weight: 900; color: var(--emergency-red); }
+.vital-label { font-size: 10px; font-weight: 900; opacity: 0.5; text-transform: uppercase; }
+
+@media (max-width: 800px) { .sos-card { flex-direction: column; align-items: flex-start; gap: 30px; } .sos-header { flex-direction: column; gap: 30px; text-align: center; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <h2 onclick="location.href='doctorportal.html'">🚨 Healix • EMERGENCY RESPONSE</h2>
+</nav>
+
+<div class="main-container">
+    
+    <div class="sos-header">
+        <div>
+            <h1 style="font-weight: 900; margin:0; font-size: 42px;">Active SOS Alerts</h1>
+            <p style="font-weight: 700; opacity: 0.4; margin-top: 10px;">DROP EVERYTHING • RESPONSE REQUIRED IMMEDIATELY</p>
+        </div>
+        <div class="sos-count-box">
+            <h1>02</h1>
+            <p>Critical<br>Cases Active</p>
+        </div>
+    </div>
+
+    <div class="sos-grid">
+        <!-- ALERT 1 -->
+        <div class="sos-card high">
+            <div class="sos-info">
+                <div class="meta"><span>ID: #PAT-2281</span> <span>TIME: 2 MINS AGO</span> <span>WARD: ICU-04</span></div>
+                <h3>Vihaan Patel</h3>
+                <div class="condition">⚡ CARDIAC DISTRESS • CRITICAL</div>
+                <p style="font-weight: 600; opacity: 0.6; max-width: 400px;">Abnormal Pulse detected via bio-sync monitor. Immediate intervention required.</p>
+            </div>
+            <div class="sos-actions">
+                <button class="btn btn-outline" onclick="openSOS('Vihaan Patel', 'Cardiac Arrest', 'ICU-11')">Quick History</button>
+                <button class="btn btn-red" onclick="alert('Emergency Team Dispatched to ICU-04!')">Respond Now</button>
+            </div>
+        </div>
+
+        <!-- ALERT 2 -->
+        <div class="sos-card high">
+            <div class="sos-info">
+                <div class="meta"><span>ID: #PAT-3091</span> <span>TIME: 15 MINS AGO</span> <span>WARD: ER-02</span></div>
+                <h3>Ravi Sharma</h3>
+                <div class="condition">🩸 SEVERE TRAUMA • STABILIZING</div>
+                <p style="font-weight: 600; opacity: 0.6; max-width: 400px;">Road accident case. Internal bleeding suspected. Vitals fluctuating.</p>
+            </div>
+            <div class="sos-actions">
+                <button class="btn btn-outline" onclick="openSOS('Ravi Sharma', 'Polytrauma', 'ER-02')">View Case</button>
+                <button class="btn btn-red" style="background:#0f172a;" onclick="alert('Patient Status updated to In-Progress')">Mark Handled</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- EMERGENCY DETAIL OVERLAY -->
+<div id="sosModal">
+    <div class="sos-body">
+        <h1 style="font-weight:900; margin:0;" id="s-name">Vihaan Patel</h1>
+        <div style="display:flex; gap:15px; margin-top:10px;">
+            <span class="status-tag" style="background:var(--emergency-red); color:white; padding:5px 15px; border-radius:10px; font-weight:900; font-size:11px;">HIGH PRIORITY</span>
+            <span id="s-cond" style="font-weight:800; opacity:0.6;">Condition: Cardiac Shock</span>
+        </div>
+
+        <div class="live-vitals">
+            <div class="vital"><div class="vital-val">142</div><div class="vital-label">Heart Rate (BPM)</div></div>
+            <div class="vital"><div class="vital-val">88%</div><div class="vital-label">SpO2 Level</div></div>
+            <div class="vital"><div class="vital-val">140/95</div><div class="vital-label">Blood Pressure</div></div>
+        </div>
+
+        <div class="clinical-snapshot">
+            <div class="snapshot-item"><label>BLOOD GROUP</label><span>B+ POSITIVE</span></div>
+            <div class="snapshot-item"><label>KNOWN ALLERGIES</label><span style="color:red;">PENICILLIN, DUST</span></div>
+            <div class="snapshot-item"><label>CHRONIC HISTORY</label><span>DIABETES TYPE 2</span></div>
+        </div>
+
+        <div style="display:flex; gap:15px; margin-top:40px;">
+            <button class="btn btn-red" style="flex:1;" onclick="alert('Critical orders sent to Nurses Station!')">Broadcast Instructions</button>
+            <button class="btn btn-outline" style="flex:1;" onclick="closeSOS()">Close Alert Hub</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openSOS(name, cond, ward) {
+    document.getElementById('s-name').innerText = name;
+    document.getElementById('s-cond').innerText = "Ward: " + ward + " • " + cond;
+    document.getElementById('sosModal').style.display = 'flex';
+}
+
+function closeSOS() {
+    document.getElementById('sosModal').style.display = 'none';
+}
+</script>
+
+</body>
+</html>

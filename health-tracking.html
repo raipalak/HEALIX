@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Tracking | Healix</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* CSS VARIABLES (DAY) */
+:root {
+  --bg: #f1f5f9;
+  --panel: #ffffff;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --border: #e2e8f0;
+  
+  --success: #10b981;
+  --success-bg: #d1fae5;
+  --warning: #f59e0b;
+  --warning-bg: #fef3c7;
+  --danger: #ef4444;
+  --danger-bg: #fee2e2;
+
+  --sidebar-w: 260px;
+}
+
+/* NIGHT MODE */
+body.night {
+  --bg: #0f172a;
+  --panel: #1e293b;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --primary: #38bdf8;
+  --primary-hover: #0ea5e9;
+  --border: #334155;
+  
+  --success: #34d399;
+  --success-bg: rgba(52, 211, 153, 0.2);
+  --warning: #fbbf24;
+  --warning-bg: rgba(251, 191, 36, 0.2);
+  --danger: #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.2);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--panel);
+  height: 100vh;
+  position: fixed;
+  border-right: 1px solid var(--border);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar .logo {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar-link {
+  padding: 12px 15px;
+  border-radius: 10px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 0.2s;
+}
+.sidebar-link:hover, .sidebar-link.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* MAIN CONTENT */
+.main {
+  margin-left: var(--sidebar-w);
+  padding: 30px 40px;
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.header-info h1 {
+  margin: 0 0 5px 0;
+  font-size: 28px;
+}
+.header-info p {
+  margin: 0;
+  color: var(--text-muted);
+}
+.theme-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+.theme-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* METRICS GRID */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.metric-card {
+  background: var(--panel);
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.metric-card .icon { font-size: 24px; margin-bottom: 10px; }
+.metric-card .label { color: var(--text-muted); font-size: 14px; font-weight: 500; }
+.metric-card .val { font-size: 24px; font-weight: 700; margin-top: 5px; }
+
+/* LOWER GRID */
+.lower-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.card {
+  background: var(--panel);
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+/* FORM */
+.input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+.input-group label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  outline: none;
+}
+.input-group input:focus { border-color: var(--primary); }
+.btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn:hover { background: var(--primary-hover); }
+
+/* DATA TABLE */
+.table-container {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 14px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+th {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge.normal { background: var(--success-bg); color: var(--success); }
+.badge.moderate { background: var(--warning-bg); color: var(--warning); }
+.badge.high { background: var(--danger-bg); color: var(--danger); }
+
+@media (max-width: 1024px) {
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .lower-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); z-index: 10; padding-top: 60px; }
+  .main { margin-left: 0; padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">🏥 <span>Healix</span></div>
+  <a href="pateintportal.html" class="sidebar-link">🏠 Dashboard</a>
+  <a href="#" class="sidebar-link active">📊 Health Tracking</a>
+  <a href="appointments.html" class="sidebar-link">📅 Appointments</a>
+  <a href="medicine.html" class="sidebar-link">💊 Medicines</a>
+  <a href="reports.html" class="sidebar-link">🧾 Reports</a>
+</aside>
+
+<main class="main">
+  <header>
+    <div class="header-info">
+      <h1>Health Tracking</h1>
+      <p>Monitor your vitals and daily activity trends</p>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()">Day / Night</button>
+  </header>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="icon">👟</div>
+      <div class="label">Daily Steps</div>
+      <div class="val" id="mockSteps">8,432</div>
+    </div>
+    <div class="metric-card">
+      <div class="icon">🔥</div>
+      <div class="label">Calories Burned</div>
+      <div class="val" id="mockCals">2,150</div>
+    </div>
+    <div class="metric-card">
+      <div class="icon">❤️</div>
+      <div class="label">Average HR</div>
+      <div class="val" id="mockHr">68 bpm</div>
+    </div>
+    <div class="metric-card">
+      <div class="icon">😴</div>
+      <div class="label">Sleep Last Night</div>
+      <div class="val" id="mockSleep">7h 15m</div>
+    </div>
+  </div>
+
+  <div class="lower-grid">
+    <div class="card">
+      <h3>Log Vitals</h3>
+      <div class="input-grid">
+        <div class="input-group">
+          <label>Systolic (mmHg)</label>
+          <input type="number" id="sysIn" placeholder="120">
+        </div>
+        <div class="input-group">
+          <label>Diastolic (mmHg)</label>
+          <input type="number" id="diaIn" placeholder="80">
+        </div>
+        <div class="input-group">
+          <label>Blood Sugar (mg/dL)</label>
+          <input type="number" id="sugarIn" placeholder="110">
+        </div>
+        <div class="input-group">
+          <label>Heart Rate (BPM)</label>
+          <input type="number" id="hrIn" placeholder="75">
+        </div>
+        <div class="input-group">
+          <label>SpO2 (%)</label>
+          <input type="number" id="spo2In" placeholder="98">
+        </div>
+        <div class="input-group">
+          <label>Body Temp (°C)</label>
+          <input type="number" step="0.1" id="tempIn" placeholder="37.0">
+        </div>
+      </div>
+      <button class="btn" onclick="saveVitals()">Save Entry</button>
+    </div>
+
+    <div class="card">
+      <h3>Vitals Analytics (Blood Pressure)</h3>
+      <div style="position: relative; height: 280px; width: 100%;">
+         <canvas id="healthChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Recent Vitals History</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>BP (Sys/Dia)</th>
+            <th>Sugar</th>
+            <th>Health Score</th>
+            <th>Risk Alert</th>
+            <th>AI Suggestion</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="historyTable">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="health-tracking.js"></script>
+</body>
+</html>

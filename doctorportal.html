@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Dashboard</title>
+
+<!-- Added Inter Font from Google Fonts for professional look -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* DAY MODE */
+:root {
+  --bg: #e0f2ff;
+  --card: #ffffff;
+  --text: #0f172a;
+  --accent: #2563eb;
+  --btn-text: #ffffff;
+  --border-color: #2563eb;
+}
+
+/* NIGHT MODE (Matching Reference Image) */
+body.night {
+  --bg: #000000;
+  --card: linear-gradient(180deg, #333333 0%, #b3b3b3 100%);
+  --text: #ffffff;
+  --accent: #ffffff;
+  --btn-text: #000000;
+  --border-color: #ffffff;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+}
+
+/* NAV */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+}
+
+nav h2 {
+  margin: 0;
+  font-weight: 700;
+}
+
+.theme button {
+  margin-left: 10px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--border-color);
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.theme button:hover {
+  background: var(--border-color);
+  color: var(--bg);
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.hero h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  color: inherit;
+  opacity: 0.8;
+  margin-top: 5px;
+}
+
+/* GRID */
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  padding: 30px;
+}
+
+/* CARD */
+.card {
+  background: var(--card);
+  padding: 25px;
+  border-radius: 16px;
+  transition: 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  border: none;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+}
+
+.card h3 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+.card p {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+/* ICONS */
+.icon {
+  font-size: 28px;
+}
+
+/* BUTTON */
+.btn {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 20px;
+  background: var(--accent);
+  color: var(--btn-text);
+  cursor: pointer;
+  transition: background 0.3s;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+/* EMERGENCY */
+.card.danger {
+  /* Only show red border in day mode if needed, but match image for flat look */
+  border: 1px solid #ef4444;
+}
+
+body.night .card.danger {
+  border: none; /* No red border in night mode based on reference */
+}
+
+.card.danger .btn {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <h2 onclick="location.href='index.html'" style="cursor:pointer">🩺 Healix - Doctor</h2>
+  <div class="theme">
+    <button onclick="setTheme('day')">Day</button>
+    <button onclick="setTheme('night')">Night</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Doctor Dashboard</h1>
+  <p>Manage patients, appointments, and medical records</p>
+</section>
+
+<div class="container">
+
+  <div class="card">
+    <div class="icon">👨‍⚕️</div>
+    <h3>My Profile</h3>
+    <p>View and update doctor details</p>
+    <button class="btn" onclick="location.href='dr_profile.html'">Settings</button>
+  </div>
+
+  <div class="card">
+    <div class="icon">📋</div>
+    <h3>Patient Management</h3>
+    <p>View, add and manage patients</p>
+    <button class="btn" onclick="location.href='dr_patients.html'">Open</button>
+  </div>
+
+  <div class="card">
+    <div class="icon">📅</div>
+    <h3>Appointments</h3>
+    <p>Manage patient bookings</p>
+    <button class="btn" onclick="location.href='dr_appointments.html'">Open</button>
+  </div>
+
+  <div class="card">
+    <div class="icon">📑</div>
+    <h3>Reports & Prescriptions</h3>
+    <p>Create and manage medical reports</p>
+    <button class="btn" onclick="location.href='dr_reports.html'">Open</button>
+  </div>
+
+  <div class="card">
+    <div class="icon">⏰</div>
+    <h3>Schedule</h3>
+    <p>Set availability and timings</p>
+    <button class="btn" onclick="location.href='dr_schedule.html'">Open</button>
+  </div>
+
+  <div class="card danger">
+    <div class="icon">🚨</div>
+    <h3>Emergency Alerts</h3>
+    <p>Handle urgent patient cases</p>
+    <button class="btn" onclick="location.href='dr_emergency.html'">SOS ALERT</button>
+  </div>
+
+</div>
+
+<script>
+function setTheme(mode) {
+  if (mode === 'night') {
+    document.body.classList.add('night');
+  } else {
+    document.body.classList.remove('night');
+  }
+}
+</script>
+
+</body>
+</html>

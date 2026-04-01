@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#e0f2ff;
+  --card:#ffffffdd;
+  --text:#0f172a;
+  --accent:#2563eb;
+}
+
+/* NIGHT MODE */
+body.night{
+  --bg:#000;
+  --card:#111;
+  --text:#fffefe;
+  --accent:#474747;
+}
+
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition: background 0.3s, color 0.3s;
+}
+
+/* NAV */
+nav{
+  display:flex;
+  justify-content:space-between;
+  padding:20px 40px;
+}
+
+nav h2 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.theme button{
+  margin-left:10px;
+  padding:6px 14px;
+  border-radius:20px;
+  border:1px solid var(--accent);
+  background:transparent;
+  color:var(--accent);
+  cursor:pointer;
+  transition: 0.3s;
+}
+
+.theme button:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* HERO */
+.hero{
+  text-align:center;
+  padding:40px 20px;
+}
+
+.hero h1{
+  font-size:36px;
+  margin: 0 0 10px 0;
+}
+
+.hero p {
+  color: var(--text);
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* GRID */
+.container{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:25px;
+  padding:30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  padding:25px;
+  border-radius:25px;
+  transition:0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-decoration: none;
+  color: var(--text);
+  border: 2px solid transparent;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+/* EMERGENCY */
+.emergency{
+  border-color: red;
+}
+
+/* BUTTON */
+.btn{
+  padding:8px 18px;
+  border:none;
+  border-radius:20px;
+  background:var(--accent);
+  color:white;
+  cursor:pointer;
+  display: inline-block;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <h2 onclick="location.href='index.html'" style="cursor:pointer">🏥 Healix</h2>
+  <div class="theme">
+    <button onclick="setTheme('day')">Day</button>
+    <button onclick="setTheme('night')">Night</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>Admin Dashboard</h1>
+  <p>Manage hospital data, staff, and system settings in one place</p>
+</section>
+
+<div class="container">
+
+<!-- MANAGE PATIENTS -->
+<div class="card" onclick="location.href='dr_patients.html'" style="cursor:pointer">
+  <div>
+    <h3>👥 Manage Patients</h3>
+    <p>View, register, and update patient records</p>
+  </div>
+  <div><button class="btn">Open</button></div>
+</div>
+
+<!-- MANAGE DOCTORS -->
+<div class="card" onclick="location.href='dr_profile.html'" style="cursor:pointer">
+  <div>
+    <h3>👨‍⚕️ Manage Doctors</h3>
+    <p>Manage doctor profiles and schedules</p>
+  </div>
+  <div><button class="btn">Open</button></div>
+</div>
+
+<!-- APPOINTMENTS -->
+<div class="card" onclick="location.href='dr_appointments.html'" style="cursor:pointer">
+  <div>
+    <h3>📅 Appointments</h3>
+    <p>Monitor and manage hospital appointments</p>
+  </div>
+  <div><button class="btn">Open</button></div>
+</div>
+
+<!-- BED MANAGEMENT -->
+<div class="card" onclick="location.href='admin_beds.html'" style="cursor:pointer">
+  <div>
+    <h3>🛏️ Bed Management</h3>
+    <p>Track bed availability and assignments</p>
+  </div>
+  <div><button class="btn">Open</button></div>
+</div>
+
+<!-- REPORTS & BILLING -->
+<div class="card" onclick="location.href='dr_reports.html'" style="cursor:pointer">
+  <div>
+    <h3>🧾 Reports & Billing</h3>
+    <p>View administrative and financial reports</p>
+  </div>
+  <div><button class="btn">Open</button></div>
+</div>
+
+<!-- SYSTEM ALERTS -->
+<div class="card emergency" onclick="location.href='dr_emergency.html'" style="cursor:pointer">
+  <div>
+    <h3>🚨 System Alerts</h3>
+    <p>Monitor critical issues and system overrides</p>
+  </div>
+  <div><button class="btn" style="background:red;">SOS</button></div>
+</div>
+
+</div>
+
+<script>
+function setTheme(mode){
+  if(mode==="night"){
+    document.body.classList.add("night");
+  } else {
+    document.body.classList.remove("night");
+  }
+}
+</script>
+
+</body>
+</html>

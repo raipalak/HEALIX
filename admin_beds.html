@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bed Management Hub - Healix Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #0f172a;
+  --accent: #2563eb;
+  --occupied: #ef4444;
+  --available: #10b981;
+  --sanitizing: #f59e0b;
+  --shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+
+body.night {
+  --bg: #000;
+  --card: #1e293b;
+  --text: #fff;
+}
+
+body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; }
+
+nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: var(--bg); position: sticky; top: 0; z-index: 100; }
+nav h2 { margin: 0; font-weight: 900; cursor: pointer; letter-spacing: -1px; }
+
+.main-container { max-width: 1400px; margin: 0 auto; padding: 20px 40px; }
+
+.header-panel { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+.stats-row { display: flex; gap: 20px; }
+.stat-pill { background: var(--card); padding: 15px 25px; border-radius: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; min-width: 100px; }
+.stat-pill label { font-size: 10px; font-weight: 900; opacity: 0.5; text-transform: uppercase; margin-bottom: 5px; }
+.stat-pill span { font-size: 24px; font-weight: 900; }
+
+/* BED GRID */
+.ward-selection { display: flex; gap: 15px; margin-bottom: 30px; }
+.ward-btn { padding: 10px 20px; border-radius: 12px; border: 1px solid #e2e8f0; background: var(--card); font-weight: 700; cursor: pointer; }
+.ward-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+.bed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; }
+
+.bed-card { background: var(--card); padding: 25px; border-radius: 28px; box-shadow: var(--shadow); border: 2px solid transparent; transition: 0.3s; cursor: pointer; position: relative; }
+.bed-card:hover { transform: translateY(-5px); }
+
+.bed-card.occupied { border-color: var(--occupied); }
+.bed-card.occupied::after { content: 'OCCUPIED'; position: absolute; top: 15px; right: 15px; font-size: 8px; font-weight: 900; background: var(--occupied); color: white; padding: 4px 8px; border-radius: 6px; }
+
+.bed-card.available { border-color: var(--available); }
+.bed-card.available::after { content: 'VACANT'; position: absolute; top: 15px; right: 15px; font-size: 8px; font-weight: 900; background: var(--available); color: white; padding: 4px 8px; border-radius: 6px; }
+
+.bed-icon { font-size: 32px; margin-bottom: 15px; }
+.bed-id { font-size: 20px; font-weight: 900; margin-bottom: 5px; }
+.bed-info { font-size: 12px; font-weight: 600; opacity: 0.6; }
+
+.patient-peek { margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(0,0,0,0.05); display: flex; align-items: center; gap: 10px; }
+.patient-peek b { font-size: 13px; font-weight: 800; }
+
+.btn { width: 100%; border-radius: 12px; border: none; padding: 12px; font-weight: 900; text-transform: uppercase; font-size: 10px; margin-top: 15px; cursor: pointer; transition: 0.3s; }
+.btn-assign { background: var(--accent); color: white; }
+.btn-release { background: #f1f5f9; color: #000; }
+
+@media (max-width: 800px) { .header-panel { flex-direction: column; align-items: flex-start; gap: 20px; } .stats-row { width: 100%; overflow-x: auto; padding-bottom: 10px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <h2 onclick="location.href='admin_dashboard.html'">🩺 Healix • BED INVENTORY</h2>
+</nav>
+
+<div class="main-container">
+    
+    <div class="header-panel">
+        <div>
+            <h1 style="margin:0; font-weight:900;">Ward Management</h1>
+            <p style="margin:5px 0 0 0; opacity:0.6; font-weight:600;">Monitor live bed occupancy and sanitization status</p>
+        </div>
+        <div class="stats-row">
+            <div class="stat-pill"><label>Total Beds</label><span>48</span></div>
+            <div class="stat-pill" style="color:var(--occupied)"><label>Occupied</label><span>32</span></div>
+            <div class="stat-pill" style="color:var(--available)"><label>Available</label><span>16</span></div>
+        </div>
+    </div>
+
+    <div class="ward-selection">
+        <button class="ward-btn active">General Ward (A)</button>
+        <button class="ward-btn">ICU / CCU</button>
+        <button class="ward-btn">Maternity Wing</button>
+        <button class="ward-btn">Emergency / ER</button>
+    </div>
+
+    <div class="bed-grid">
+        <!-- Bed 1: Occupied -->
+        <div class="bed-card occupied">
+            <div class="bed-icon">🛏️</div>
+            <div class="bed-id">Bed #A-101</div>
+            <div class="bed-info">General Ward • Wing 1</div>
+            <div class="patient-peek">
+                <div style="background:#ddd; width:30px; height:30px; border-radius:50%;"></div>
+                <div><b>Vihaan Patel</b><br><small style="opacity:0.6;">Patient ID: #PAT2281</small></div>
+            </div>
+            <button class="btn btn-release" onclick="alert('Release protocol initiated...')">Transfer / Release</button>
+        </div>
+
+        <!-- Bed 2: Available -->
+        <div class="bed-card available">
+            <div class="bed-icon">🛏️</div>
+            <div class="bed-id">Bed #A-102</div>
+            <div class="bed-info">General Ward • Wing 1</div>
+            <p style="font-size:12px; margin-top:15px; opacity:0.6;">Ready for immediate assignment.</p>
+            <button class="btn btn-assign" onclick="alert('Assigning new patient...')">Assign Patient</button>
+        </div>
+
+        <!-- Bed 3: Available -->
+        <div class="bed-card available">
+            <div class="bed-icon">🛏️</div>
+            <div class="bed-id">Bed #A-103</div>
+            <div class="bed-info">General Ward • Wing 1</div>
+            <p style="font-size:12px; margin-top:15px; opacity:0.6;">Sanitization Complete • Sterile.</p>
+            <button class="btn btn-assign" onclick="alert('Assigning new patient...')">Assign Patient</button>
+        </div>
+
+        <!-- Bed 4: Occupied -->
+        <div class="bed-card occupied">
+            <div class="bed-icon">🛏️</div>
+            <div class="bed-id">Bed #A-104</div>
+            <div class="bed-info">General Ward • Wing 1</div>
+            <div class="patient-peek">
+                <div style="background:#ddd; width:30px; height:30px; border-radius:50%;"></div>
+                <div><b>Aditya Singh</b><br><small style="opacity:0.6;">Patient ID: #PAT3091</small></div>
+            </div>
+            <button class="btn btn-release" onclick="alert('Release protocol initiated...')">Transfer / Release</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function setTheme(mode) {
+  if (mode === 'night') document.body.classList.add('night');
+  else document.body.classList.remove('night');
+}
+</script>
+
+</body>
+</html>

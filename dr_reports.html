@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical Records & Prescriptions - Healix Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --accent: #2563eb;
+  --btn-text: #ffffff;
+  --border-color: #2563eb;
+  --shadow: 0 10px 30px rgba(0,0,0,0.04);
+  --critical: #ef4444;
+  --pending: #f59e0b;
+  --normal: #10b981;
+}
+
+body.night {
+  --bg: #000000;
+  --card: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  --text: #ffffff;
+  --accent: #38bdf8;
+  --btn-text: #ffffff;
+}
+
+body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; }
+
+nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: var(--bg); position: sticky; top: 0; z-index: 1000; }
+nav h2 { margin: 0; font-weight: 900; cursor: pointer; letter-spacing: -1px; }
+
+.main-container { max-width: 1400px; margin: 0 auto; padding: 20px 40px; display: grid; grid-template-columns: 1fr; gap: 40px; }
+
+/* MODULE HEADERS */
+.module-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.module-header h1 { font-size: 28px; font-weight: 900; margin: 0; }
+.controls { display: flex; gap: 15px; }
+
+/* SEARCH & FILTERS */
+.search-input { padding: 12px 20px; border-radius: 12px; border: 1px solid #e2e8f0; font-family: inherit; font-weight: 600; min-width: 250px; }
+.filter-select { padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: 600; background: white; }
+
+/* GRID CARDS */
+.report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.report-card { background: var(--card); padding: 25px; border-radius: 28px; box-shadow: var(--shadow); border-top: 5px solid transparent; transition: 0.3s; }
+.report-card:hover { transform: translateY(-5px); }
+.report-card.critical { border-color: var(--critical); }
+.report-card.pending { border-color: var(--pending); }
+
+.report-type { font-size: 10px; font-weight: 900; opacity: 0.5; text-transform: uppercase; margin-bottom: 15px; display: flex; justify-content: space-between; }
+.patient-name { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+.report-date { font-size: 12px; opacity: 0.6; font-weight: 600; margin-bottom: 20px; }
+
+.status-tag { padding: 4px 12px; border-radius: 8px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+.status-tag.critical { background: #fee2e2; color: #ef4444; }
+.status-tag.pending { background: #fef3c7; color: #d97706; }
+.status-tag.normal { background: #ecfdf5; color: #10b981; }
+
+.btn { padding: 12px 20px; border: none; border-radius: 12px; font-weight: 800; font-size: 11px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+.btn-primary { background: var(--accent); color: var(--btn-text); }
+.btn-outline { background: transparent; border: 2px solid #e2e8f0; color: inherit; }
+
+/* MODALS */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); display: none; z-index: 2000; align-items: center; justify-content: center; }
+.modal-content { background: white; width: 90%; max-width: 700px; border-radius: 32px; padding: 40px; color: #000; max-height: 90vh; overflow-y: auto; }
+
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-size: 11px; font-weight: 900; opacity: 0.5; text-transform: uppercase; margin-bottom: 8px; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 14px; font-family: inherit; font-size: 14px; box-sizing: border-box; }
+
+.medicine-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+@media (max-width: 800px) { .module-header { flex-direction: column; align-items: flex-start; gap: 15px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <h2 onclick="location.href='doctorportal.html'">🩺 Healix • CLINICAL RECORDS</h2>
+</nav>
+
+<div class="main-container">
+
+    <!-- REPORTS MODULE -->
+    <section>
+        <div class="module-header">
+            <div>
+                <h1>Patient Lab Reports</h1>
+                <p style="opacity:0.6; margin:5px 0 0 0; font-weight:600;">Monitor and analyze clinical test results</p>
+            </div>
+            <div class="controls">
+                <input type="text" class="search-input" placeholder="Search Patient Name...">
+                <select class="filter-select">
+                    <option>All Reports</option>
+                    <option>Critical Only</option>
+                    <option>Pending Review</option>
+                </select>
+                <button class="btn btn-primary" onclick="openModal('reportUploadModal')">+ Upload Report</button>
+            </div>
+        </div>
+
+        <div class="report-grid">
+            <!-- Critical Report -->
+            <div class="report-card critical">
+                <div class="report-type"><span>MRI SCAN • BRAIN</span> <span class="status-tag critical">Critical</span></div>
+                <div class="patient-name">Vihaan Patel</div>
+                <div class="report-date">Aquired: March 28, 2024</div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-outline" style="flex:1;">View Analysis</button>
+                    <button class="btn btn-primary">Sign-off</button>
+                </div>
+            </div>
+
+            <!-- Pending Report -->
+            <div class="report-card pending">
+                <div class="report-type"><span>BLOOD PANEL</span> <span class="status-tag pending">Pending Review</span></div>
+                <div class="patient-name">Aditya Singh</div>
+                <div class="report-date">Aquired: March 30, 2024</div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-outline" style="flex:1;">Review Data</button>
+                </div>
+            </div>
+
+            <!-- Normal Report -->
+            <div class="report-card">
+                <div class="report-type"><span>X-RAY • CHEST</span> <span class="status-tag normal">Normal</span></div>
+                <div class="patient-name">Isha Sharma</div>
+                <div class="report-date">Aquired: April 01, 2024</div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-outline" style="flex:1;">View Image</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr style="opacity:0.05;">
+
+    <!-- PRESCRIPTION MODULE -->
+    <section>
+        <div class="module-header">
+            <div>
+                <h1>Digital Prescriptions</h1>
+                <p style="opacity:0.6; margin:5px 0 0 0; font-weight:600;">Manage and issue medical advice</p>
+            </div>
+            <div class="controls">
+                <button class="btn btn-primary" onclick="openModal('prescCreateModal')">✍️ Write New Prescription</button>
+            </div>
+        </div>
+
+        <div class="report-grid">
+            <div class="report-card" style="border-top:5px solid var(--accent)">
+                <div class="report-type"><span>Active Plan • 3 Meds</span></div>
+                <div class="patient-name">Vihaan Patel</div>
+                <div class="report-date">Last Updated: 2 Hours ago</div>
+                <p style="font-size:12px; font-weight:600; opacity:0.6;">Dengue Protocol • Advised strict bed rest and high fluid intake.</p>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button class="btn btn-outline" style="flex:1;">View PDF</button>
+                    <button class="btn btn-outline">Edit</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- REPORT UPLOAD MODAL -->
+<div id="reportUploadModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 style="font-weight:900; margin-bottom:30px;">Cloud Report Synchronization</h2>
+        <div class="form-group">
+            <label>Select Patient</label>
+            <select><option>Vihaan Patel (#PAT101)</option><option>Aditya Singh (#PAT228)</option></select>
+        </div>
+        <div class="form-group">
+            <label>Report Type</label>
+            <input type="text" placeholder="e.g. Full Body CT Scan">
+        </div>
+        <div class="form-group">
+            <label>Mark Critical?</label>
+            <input type="checkbox" style="width:auto;"> Yes, this requires immediate attention
+        </div>
+        <div style="border:2px dashed #e2e8f0; padding:40px; text-align:center; border-radius:20px; margin-bottom:20px;">
+            <p style="font-weight:700; opacity:0.5;">Upload DICOM/PDF Files</p>
+            <button class="btn btn-outline" style="margin-top:10px;">Select from Hub</button>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <button class="btn btn-outline" style="flex:1;" onclick="closeAllModals()">Cancel</button>
+            <button class="btn btn-primary" style="flex:1;" onclick="alert('Synchronizing Lab Data...'); closeAllModals();">Finalize Upload</button>
+        </div>
+    </div>
+</div>
+
+<!-- PRESCRIPTION CREATE MODAL -->
+<div id="prescCreateModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 style="font-weight:900; margin-bottom:30px;">Digital Prescription Pad</h2>
+        <div class="form-group">
+            <label>Target Case</label>
+            <input type="text" placeholder="Search Patient Name...">
+        </div>
+        <div id="medList">
+            <label style="font-size:10px; font-weight:900; opacity:0.5; text-transform:uppercase;">Medicines & Dosage</label>
+            <div class="medicine-row">
+                <input type="text" placeholder="Medicine Name">
+                <input type="text" placeholder="Dosage">
+                <input type="text" placeholder="Freq">
+            </div>
+        </div>
+        <button class="btn btn-outline" style="width:100%; margin:10px 0 20px 0;" onclick="addMedRow()">+ Add Another Medicine</button>
+        <div class="form-group">
+            <label>Doctor's Advice / Diet</label>
+            <textarea placeholder="Specific instructions for the patient..."></textarea>
+        </div>
+        <div style="display:flex; gap:15px;">
+            <button class="btn btn-outline" style="flex:1;" onclick="closeAllModals()">Discard</button>
+            <button class="btn btn-primary" style="flex:1;" onclick="alert('Prescription Signed & Issued!'); closeAllModals();">Sign & Send SMS</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+}
+
+function closeAllModals() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+}
+
+function addMedRow() {
+    const row = document.createElement('div');
+    row.className = 'medicine-row';
+    row.innerHTML = `
+        <input type="text" placeholder="Medicine Name">
+        <input type="text" placeholder="Dosage">
+        <input type="text" placeholder="Freq">
+    `;
+    document.getElementById('medList').appendChild(row);
+}
+</script>
+
+</body>
+</html>

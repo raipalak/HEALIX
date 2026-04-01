@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Scheduling System - Healix Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #0f172a;
+  --accent: #2563eb;
+  --btn-text: #ffffff;
+  --border-color: #2563eb;
+  --shadow: 0 10px 30px rgba(0,0,0,0.04);
+  --waiting: #f59e0b;
+  --ongoing: #3b82f6;
+  --completed: #10b981;
+  --free: #ecfdf5;
+  --free-text: #059669;
+}
+
+body.night {
+  --bg: #000;
+  --card: #1e293b;
+  --text: #fff;
+  --accent: #38bdf8;
+}
+
+body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); transition: 0.3s; }
+
+nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: var(--bg); position: sticky; top: 0; z-index: 100; }
+nav h2 { margin: 0; font-weight: 900; cursor: pointer; letter-spacing: -1px; }
+
+.main-layout { max-width: 1400px; margin: 0 auto; padding: 20px 40px; display: grid; grid-template-columns: 1fr 450px; gap: 30px; }
+
+/* WEEKLY AVAILABILITY (TOP) */
+.weekly-strip { grid-column: 1 / span 2; background: var(--card); border-radius: 32px; padding: 30px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.day-toggle { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 15px; border-radius: 20px; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.3s; }
+.day-toggle.active { border-color: var(--accent); background: rgba(37, 99, 235, 0.05); }
+.day-toggle h4 { margin: 0; font-size: 13px; font-weight: 800; }
+.day-toggle span { font-size: 9px; opacity: 0.5; font-weight: 900; text-transform: uppercase; }
+
+/* TIMELINE (LEFT) */
+.schedule-section { background: var(--card); border-radius: 32px; padding: 40px; box-shadow: var(--shadow); }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.section-header h2 { margin: 0; font-weight: 900; }
+
+.slot-item { display: flex; align-items: flex-start; gap: 30px; padding: 25px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+.slot-item:last-child { border: none; }
+
+.time-box { width: 80px; font-weight: 900; color: var(--accent); font-size: 14px; }
+.slot-card { flex: 1; display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-radius: 20px; background: #f8fafc; }
+body.night .slot-card { background: rgba(0,0,0,0.2); }
+
+.slot-info h4 { margin: 0; font-size: 18px; font-weight: 800; }
+.slot-info p { margin: 5px 0 0 0; font-size: 11px; font-weight: 700; opacity: 0.5; text-transform: uppercase; }
+
+.status-label { padding: 6px 14px; border-radius: 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+.status-label.waiting { background: #fef3c7; color: #d97706; }
+.status-label.ongoing { background: #dbeafe; color: #2563eb; }
+.status-label.completed { background: #d1fae5; color: #059669; }
+.status-label.free { background: #ecfdf5; color: #059669; }
+
+.act-btn { padding: 10px 20px; border: none; border-radius: 12px; background: var(--accent); color: var(--btn-text); font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 10px; transition: 0.3s; }
+
+/* SIDEBAR CONTROLS */
+.controls-sidebar { display: flex; flex-direction: column; gap: 30px; }
+.control-panel { background: var(--card); border-radius: 32px; padding: 30px; box-shadow: var(--shadow); }
+.control-panel h3 { margin: 0 0 20px 0; font-size: 16px; font-weight: 900; text-transform: uppercase; }
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 10px; font-weight: 900; opacity: 0.5; text-transform: uppercase; margin-bottom: 8px; }
+.form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-family: inherit; font-weight: 600; box-sizing: border-box; }
+
+.btn-block { background: #0f172a; color: white; width: 100%; border-radius: 12px; padding: 14px; font-weight: 800; border: none; cursor: pointer; margin-top: 10px; }
+.btn-leave { background: #fee2e2; color: #ef4444; width: 100%; border-radius: 12px; padding: 14px; font-weight: 800; border: none; cursor: pointer; margin-top: 10px; }
+
+@media (max-width: 1100px) { .main-layout { grid-template-columns: 1fr; } .weekly-strip { overflow-x: auto; padding: 20px; } .day-toggle { min-width: 100px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <h2 onclick="location.href='doctorportal.html'">🩺 Healix • ROSTER & SLOTS</h2>
+</nav>
+
+<div class="main-layout">
+    
+    <!-- WEEKLY AVAILABILITY -->
+    <section class="weekly-strip">
+        <div class="day-toggle active"><span>Mon</span><h4>10AM-2PM</h4></div>
+        <div class="day-toggle active"><span>Tue</span><h4>10AM-2PM</h4></div>
+        <div class="day-toggle"><span>Wed</span><h4>SET TIME</h4></div>
+        <div class="day-toggle active"><span>Thu</span><h4>12PM-5PM</h4></div>
+        <div class="day-toggle active"><span>Fri</span><h4>10AM-2PM</h4></div>
+        <div class="day-toggle" style="background:#fee2e2; border-color:#fecaca;"><span>Sat</span><h4 style="color:#ef4444;">OFF</h4></div>
+        <div class="day-toggle" style="background:#fee2e2; border-color:#fecaca;"><span>Sun</span><h4 style="color:#ef4444;">OFF</h4></div>
+    </section>
+
+    <!-- TODAY'S SCHEDULE (TIMELINE) -->
+    <section class="schedule-section">
+        <div class="section-header">
+            <div>
+                <h2>Clinical Timeline</h2>
+                <p style="margin:5px 0 0 0; font-size:12px; font-weight:600; opacity:0.6;">Today • April 02, 2024</p>
+            </div>
+            <button class="act-btn" style="background:#f1f5f9; color:#000;" onclick="alert('Slot Generator Initialized...')">🔄 Auto-Generate Slots</button>
+        </div>
+
+        <div id="slotTimeline">
+            <!-- Occupied Slot -->
+            <div class="slot-item">
+                <div class="time-box">10:00 AM</div>
+                <div class="slot-card">
+                    <div class="slot-info">
+                        <h4>Vihaan Patel</h4>
+                        <p>Case ID: #PAT2281 • Dengue Care</p>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:20px;">
+                        <span class="status-label waiting">Waiting</span>
+                        <button class="act-btn" onclick="alert('Session Started!')">Start Visit</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free Slot -->
+            <div class="slot-item">
+                <div class="time-box">10:30 AM</div>
+                <div class="slot-card" style="border: 1px dashed var(--free-text); background: var(--free);">
+                    <div class="slot-info">
+                        <h4 style="color:var(--free-text); opacity:0.6;">(Empty Slot)</h4>
+                        <p style="color:var(--free-text);">Available for Booking</p>
+                    </div>
+                    <span class="status-label free">Available</span>
+                </div>
+            </div>
+
+            <!-- Blocked Slot -->
+            <div class="slot-item" style="opacity:0.5;">
+                <div class="time-box">11:00 AM</div>
+                <div class="slot-card" style="background:#f1f5f9;">
+                    <div class="slot-info">
+                        <h4>BLOCKED</h4>
+                        <p>Hospital Meeting / Admin Work</p>
+                    </div>
+                    <button class="act-btn" style="background:#cbd5e1; color:#000;">Unblock</button>
+                </div>
+            </div>
+
+            <!-- Ongoing Slot -->
+            <div class="slot-item">
+                <div class="time-box">11:30 AM</div>
+                <div class="slot-card">
+                    <div class="slot-info">
+                        <h4>Aditya Singh</h4>
+                        <p>Routine Session • Post Surgery</p>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:20px;">
+                        <span class="status-label ongoing" style="box-shadow:0 0 10px #3b82f6;">Ongoing</span>
+                        <button class="act-btn" style="background:#0f172a;" onclick="alert('Consultation Completed!')">Complete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTROLS SIDEBAR -->
+    <aside class="controls-sidebar">
+        <!-- BLOCK TIME PANEL -->
+        <div class="control-panel">
+            <h3>Block Clinic Time</h3>
+            <div class="form-group">
+                <label>Start Time</label>
+                <input type="time" value="13:00">
+            </div>
+            <div class="form-group">
+                <label>End Time</label>
+                <input type="time" value="14:00">
+            </div>
+            <div class="form-group">
+                <label>Reason</label>
+                <select>
+                    <option>Break / Lunch</option>
+                    <option>Emergency Surgery</option>
+                    <option>Personal Work</option>
+                </select>
+            </div>
+            <button class="btn-block">Apply Block</button>
+        </div>
+
+        <!-- LEAVE PANEL -->
+        <div class="control-panel">
+            <h3>Mark Absence</h3>
+            <div class="form-group">
+                <label>Effective From</label>
+                <input type="date">
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select>
+                    <option>Sick Leave</option>
+                    <option>Casual Leave</option>
+                    <option>Conference</option>
+                </select>
+            </div>
+            <button class="btn-leave" onclick="alert('Roster updated. Appointments for this date will be rescheduled.')">Request Leave</button>
+        </div>
+    </aside>
+
+</div>
+
+<script>
+// Mock data sync flow
+function setTheme(mode) {
+  if (mode === 'night') document.body.classList.add('night');
+  else document.body.classList.remove('night');
+}
+</script>
+
+</body>
+</html>
